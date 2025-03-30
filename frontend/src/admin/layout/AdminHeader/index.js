@@ -7,42 +7,51 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(Styles);
 
 function AdminHeader() {
-    const [user, setUser] = useState(null);
+    const [admin, setAdmin] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             // Lấy userId hiện tại
-    //             const userIdResponse = await axios.get('https://qlks1-918e7-default-rtdb.firebaseio.com/user.json');
-    //             const userId = userIdResponse.data;
+    useEffect(() => {
+        const checkAdminLogin = async () => {
+            try {
+                setLoading(true);
+                // Sử dụng API checkLogin đã định nghĩa trong AuthAdminController
+                const response = await axios.get('http://localhost:5000/authadmin/checklogin', {
+                    withCredentials: true
+                });
 
-    //             if (!userId) {
-    //                 navigate('/login');
-    //                 return;
-    //             }
+                if (response.data.login) {
+                    setAdmin(response.data.admin);
+                } else {
+                    setAdmin(null);
+                }
+            } catch (error) {
+                console.error('Lỗi khi kiểm tra đăng nhập:', error);
+                setAdmin(null);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    //             // Lấy thông tin user từ Realtime Database
-    //             const userResponse = await axios.get(`https://qlks1-918e7-default-rtdb.firebaseio.com/users/${userId}.json`);
-    //             setUser(userResponse.data);
-    //         } catch (error) {
-    //             console.error('Lỗi khi lấy thông tin user:', error);
-    //             navigate('/login');
-    //         }
-    //     };
-
-    //     fetchUserData();
-    // }, [navigate]);
+        checkAdminLogin();
+    }, []);
 
     // Xử lý đăng xuất
-    const handleLogout = () => {
-        axios.delete('https://qlks1-918e7-default-rtdb.firebaseio.com/user.json')
-            .then(() => {
-                navigate('/login');
-            })
-            .catch((error) => {
-                console.error('Lỗi khi đăng xuất:', error);
+    const handleLogout = async () => {
+        try {
+            // Sử dụng API logout đã định nghĩa trong AuthAdminController
+            await axios.post('http://localhost:5000/authadmin/logout', {}, {
+                withCredentials: true
             });
+            setAdmin(null);
+            navigate('/admin/login');
+        } catch (error) {
+            console.error('Lỗi khi đăng xuất:', error);
+        }
+    };
+
+    const handleLogin = () => {
+        navigate('/admin/login');
     };
 
     return (
@@ -50,21 +59,22 @@ function AdminHeader() {
             <div className={cx("container")}>
                 <div className={cx("header")}>
                     <div className={cx("user_info")}>
-                        {user ? (
+                        {loading ? (
+                            <span>Đang tải...</span>
+                        ) : admin ? (
                             <>
-                                <span>Xin chào, {user.name} ({user.email})</span>
+                                <span>Xin chào, {admin.email}</span>
                                 <button className={cx("logout_button")} onClick={handleLogout}>Đăng xuất</button>
                             </>
                         ) : (
-                            <span>Đang tải...</span>
+                            <>
+                                <span>Chưa đăng nhập</span>
+                                <button className={cx("login_button")} onClick={handleLogin}>Đăng nhập</button>
+                            </>
                         )}
                     </div>
 
                     <h1 className={cx("admin_title")} onClick={() => navigate('/admin')}>Admin</h1>
-                    <nav className={cx("admin_nav")}>
-                        <Link to="/admin/payments" className={cx("nav_link")}>Quản lý thanh toán</Link>
-                        <Link to="/admin/transaction-history" className={cx("nav_link")}>Lịch sử giao dịch</Link>
-                    </nav>
                 </div>
             </div>
         </header>

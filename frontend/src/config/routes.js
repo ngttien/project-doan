@@ -22,8 +22,10 @@ const routes = {
     staff: '/admin/staff',
     reviews: '/admin/reviews',
     booking: '/booking',
-    manageroom: '/admin/room'
-    //homeadmin:'/admin/home',
+    manageroom: '/admin/room',
+    revenue: '/admin/revenue',
+    managebills: '/admin/managebills',
+    review: 'admin/reviews',
 };
 
 export default routes;

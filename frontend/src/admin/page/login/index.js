@@ -11,19 +11,24 @@ function LoginAdmin() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:5000/authadmin', { email, password }, { withCredentials: true });
+            const response = await axios.post('http://localhost:5000/authadmin/login', { email, password }, { withCredentials: true });
             if (response.data.success) {
-                navigate('/admin/dashboard'); // Chuyển hướng đến trang quản lý
+                navigate('/admin'); // Chuyển hướng đến trang chính
             }
         } catch (error) {
             setError(error.response?.data?.message || 'Đăng nhập thất bại!');
+        }
+        finally {
+            setLoading(false);
         }
     };
 

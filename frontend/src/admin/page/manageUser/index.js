@@ -1,4 +1,3 @@
-// src/components/CustomerManagement.js
 import classNames from 'classnames/bind';
 import styles from './manageUser.module.scss';
 import { useEffect, useState } from 'react';
@@ -12,18 +11,17 @@ function ManageUser() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [verified, setVerified] = useState(false);
-  const [userId, setUserId] = useState(''); // For editing
+  const [userId, setUserId] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   const formData = { userId, name, email, phone, verified };
 
-  // Fetch customer list on component mount
   useEffect(() => {
     const fetchCustomerList = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/getcustomers');
+        const response = await axios.get('http://localhost:5000/useradmin/getusersadmin');
         const data = Object.entries(response.data).map(([id, customer]) => ({
           ID_khachhang: id,
           ...customer,
@@ -40,12 +38,10 @@ function ManageUser() {
     };
     fetchCustomerList();
 
-    // Optional: Poll for updates (to reflect new registrations in real-time)
-    const interval = setInterval(fetchCustomerList, 10000); // Poll every 10 seconds
-    return () => clearInterval(interval); // Cleanup on unmount
+    const interval = setInterval(fetchCustomerList, 10000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Validate form inputs
   const validateForm = () => {
     if (!name) {
       setError('Tên là bắt buộc.');
@@ -62,7 +58,6 @@ function ManageUser() {
     return true;
   };
 
-  // Handle form submission (update only)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -71,12 +66,10 @@ function ManageUser() {
     if (!validateForm()) return;
 
     try {
-      // Update customer
-      await axios.put('http://localhost:3000/updatecustomer', formData);
+      await axios.put('http://localhost:5000/useradmin/updateuseradmin', formData);
       setSuccess('Cập nhật khách hàng thành công!');
 
-      // Refresh customer list
-      const response = await axios.get('http://localhost:3000/getcustomers');
+      const response = await axios.get('http://localhost:5000/useradmin/getuseradmin');
       const data = Object.entries(response.data).map(([id, customer]) => ({
         ID_khachhang: id,
         ...customer,
@@ -88,7 +81,6 @@ function ManageUser() {
     }
   };
 
-  // Handle edit button click
   const handleEdit = (customer) => {
     setUserId(customer.ID_khachhang);
     setName(customer.name);
@@ -98,17 +90,15 @@ function ManageUser() {
     setIsEditing(true);
   };
 
-  // Handle delete button click
   const handleDelete = async (userId) => {
     if (window.confirm('Bạn có chắc muốn xóa khách hàng này?')) {
       try {
-        await axios.delete('http://localhost:3000/deletecustomer', {
+        await axios.delete('http://localhost:5000/useradmin/deleteuseradmin', {
           data: { userId },
         });
         setSuccess('Xóa khách hàng thành công!');
 
-        // Refresh customer list
-        const response = await axios.get('http://localhost:3000/getcustomers');
+        const response = await axios.get('http://localhost:5000/useradmin/getuseradmin');
         const data = Object.entries(response.data).map(([id, customer]) => ({
           ID_khachhang: id,
           ...customer,
@@ -120,7 +110,6 @@ function ManageUser() {
     }
   };
 
-  // Reset form
   const resetForm = () => {
     setUserId('');
     setName('');
@@ -132,11 +121,10 @@ function ManageUser() {
 
   return (
     <div className={cx('parent')}>
-      {/* Display Success/Error Messages */}
       {error && <div className={cx('alert', 'alert-error')}>{error}</div>}
       {success && <div className={cx('alert', 'alert-success')}>{success}</div>}
 
-      {/* Customer List */}
+      {/*danh sách khách hàng*/}
       <div className={cx('customer')}>
         <div className={cx('cart')}>
           <div className={cx('cart-item')}>
@@ -195,7 +183,7 @@ function ManageUser() {
         </div>
       </div>
 
-      {/* Form to Edit Customer */}
+      {/*cập nhật khách hàng*/}
       {isEditing && (
         <div className={cx('form')}>
           <h2>Cập Nhật Khách Hàng</h2>
@@ -214,7 +202,7 @@ function ManageUser() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              disabled // Email shouldn't be editable to avoid breaking authentication
+              disabled // không cho chỉnh sửa gmail
             />
             <input
               type="tel"

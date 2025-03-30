@@ -1,4 +1,3 @@
-// server/controllers/StaffController.js
 const { db } = require("../../firebase/firebase");
 const { v4: uuidv4 } = require("uuid");
 
@@ -6,15 +5,15 @@ class StaffAdminController {
   // Lấy danh sách nhân viên
   async getStaffAdmin(req, res) {
     try {
-      const staffRef = db.ref("STAFF"); // Trỏ tới node "STAFF" trong Firebase
-      const snapshot = await staffRef.once("value"); // Lấy dữ liệu từ Firebase
+      const staffRef = db.ref("STAFF");
+      const snapshot = await staffRef.once("value");
 
       if (!snapshot.exists()) {
         return res.status(404).json({ message: "Không có dữ liệu nhân viên" });
       }
 
-      const staffList = snapshot.val(); // Chuyển dữ liệu từ snapshot thành object
-      return res.status(200).json(staffList); // Trả về danh sách nhân viên
+      const staffList = snapshot.val();
+      return res.status(200).json(staffList);
     } catch (error) {
       console.error("Lỗi lấy danh sách nhân viên:", error);
       return res

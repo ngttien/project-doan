@@ -1,10 +1,10 @@
 const express = require("express");
-const route = express.Router();
 const BookingAdminController = require("../app/controller/BookingAdminController");
 
-// Routes cho đặt phòng
-route.use("/getbooking", BookingAdminController.getBookingAdmin);
-route.use("/updatebooking", BookingAdminController.updateBookingAdmin);
-route.use("/deletebooking", BookingAdminController.deleteBookingAdmin);
+const router = express.Router();
 
-module.exports = route;
+router.get("/getbooking", BookingAdminController.getBookingAdmin);
+router.put("/updatebooking", BookingAdminController.updateBookingAdmin);
+router.delete("/deletebooking", BookingAdminController.deleteBookingAdmin);
+
+module.exports = router;

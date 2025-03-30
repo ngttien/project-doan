@@ -16,7 +16,9 @@ import AdRegister from '~/admin/page/register';
 import ManagerBooking from '~/admin/page/managerbooking';
 import ManageUser from '~/admin/page/manageUser';
 import ManageRooms from '~/admin/page/manageroom';
-
+import Revenue from '~/admin/page/revenue';
+// import Managebills from '~/admin/page/manageBills';
+import Review from '~/admin/page/review';
 import StaffManagement from '~/admin/page/manageStaff';
 // import Reviews from '~/admin/page/reviews';
 import AdminLayout from '~/admin/layout/adminLayout';
@@ -41,6 +43,9 @@ const config = [
     { path: routesconfig.manageuser, component: ManageUser, Layout: AdminLayout },
     { path: routesconfig.manageroom, component: ManageRooms, Layout: AdminLayout },
     { path: routesconfig.staff, component: StaffManagement, Layout: AdminLayout },
+    { path: routesconfig.revenue, component: Revenue, Layout: AdminLayout },
+    // { path: routesconfig.managebills, component: Managebills, Layout: AdminLayout },
+    { path: routesconfig.review, component: Review, Layout: AdminLayout },
     //{ path: routesconfig.homeadmin, component: Home, Layout: AdminLayout },
     //{ path: '/admin/reviews', component: Reviews , Layout: AdminLayout },
 ];

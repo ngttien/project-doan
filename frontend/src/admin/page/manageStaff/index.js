@@ -1,4 +1,3 @@
-// src/components/StaffManagement.js
 import classNames from 'classnames/bind';
 import styles from './manageStaff.module.scss';
 import { useEffect, useState } from 'react';
@@ -20,7 +19,6 @@ function StaffManagement() {
 
     const formData = { staffId, staffCode, name, position, email, phone };
 
-    // Fetch staff list on component mount
     useEffect(() => {
         const fetchStaffList = async () => {
             try {
@@ -38,7 +36,7 @@ function StaffManagement() {
         fetchStaffList();
     }, []);
 
-    // Validate form inputs
+    //xác thực đầu vào
     const validateForm = () => {
         if (!name || !position) {
             setError('Tên và vị trí là bắt buộc.');
@@ -55,7 +53,7 @@ function StaffManagement() {
         return true;
     };
 
-    // Handle form submission (add or update)
+    //xử lý thêm hoặc cập nhật
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -65,15 +63,15 @@ function StaffManagement() {
 
         try {
             if (isEditing) {
-                // Update staff
+                // cập nhật nv
                 await axios.put('http://localhost:5000/staff/updatestaff', formData);
                 setSuccess('Cập nhật nhân viên thành công!');
             } else {
-                // Add new staff
+                // thêm nv
                 await axios.post('http://localhost:5000/staff/addstaff', formData);
                 setSuccess('Thêm nhân viên thành công!');
             }
-            // Refresh staff list and reset form
+            // refresh
             const response = await axios.get('http://localhost:5000/staff/getstaff');
             const data = Object.entries(response.data).map(([id, staff]) => ({
                 ID_nhanvien: id,
@@ -86,7 +84,6 @@ function StaffManagement() {
         }
     };
 
-    // Handle edit button click
     const handleEdit = (staff) => {
         setStaffId(staff.ID_nhanvien);
         setStaffCode(staff.staffCode);
@@ -97,7 +94,6 @@ function StaffManagement() {
         setIsEditing(true);
     };
 
-    // Handle delete button click
     const handleDelete = async (staffCode) => {
         if (window.confirm('Bạn có chắc muốn xóa nhân viên này?')) {
             try {
@@ -105,7 +101,6 @@ function StaffManagement() {
                     data: { staffCode },
                 });
                 setSuccess('Xóa nhân viên thành công!');
-                // Refresh staff list
                 const response = await axios.get('http://localhost:5000/getstaff');
                 const data = Object.entries(response.data).map(([id, staff]) => ({
                     ID_nhanvien: id,
@@ -118,7 +113,6 @@ function StaffManagement() {
         }
     };
 
-    // Reset form
     const resetForm = () => {
         setStaffId('');
         setStaffCode('');
@@ -131,11 +125,11 @@ function StaffManagement() {
 
     return (
         <div className={cx('parent')}>
-            {/* Display Success/Error Messages */}
+            {/* thông báo */}
             {error && <div className={cx('alert', 'alert-error')}>{error}</div>}
             {success && <div className={cx('alert', 'alert-success')}>{success}</div>}
 
-            {/* Staff List */}
+            {/* danh sách nv */}
             <div className={cx('staff')}>
                 <div className={cx('cart')}>
                     <div className={cx('cart-item')}>
@@ -184,7 +178,7 @@ function StaffManagement() {
                 </div>
             </div>
 
-            {/* Form to Add/Edit Staff */}
+            {/* sửa và thêm */}
             <div className={cx('form')}>
                 <h2>{isEditing ? 'Cập Nhật Nhân Viên' : 'Thêm Nhân Viên'}</h2>
                 <form onSubmit={handleSubmit}>

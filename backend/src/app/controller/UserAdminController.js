@@ -1,4 +1,3 @@
-// server/controllers/UserController.js
 const { db } = require("../../firebase/firebase");
 
 class UserAdminController {

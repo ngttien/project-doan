@@ -19,13 +19,16 @@ function RegisterAdmin() {
         setError('');
 
         try {
-            const response = await fetch('https://qlks1-918e7-default-rtdb.firebaseio.com/admins.json', {
+            // Thay vì POST trực tiếp đến Firebase, gọi API đăng ký đã tạo
+            const response = await fetch('http://localhost:5000/authadmin/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password, name, phone })
+                body: JSON.stringify({ email, password, name, phone }),
+                credentials: 'include'
             });
 
-            if (!response.ok) throw new Error('Đăng ký thất bại! Vui lòng thử lại.');
+            const data = await response.json();
+            if (!data.success) throw new Error(data.message || 'Đăng ký thất bại!');
 
             alert('Đăng ký thành công! Chuyển hướng đến trang đăng nhập.');
             setTimeout(() => navigate('/admin/login'), 2000);

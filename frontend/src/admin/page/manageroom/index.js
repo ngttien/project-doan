@@ -1,4 +1,3 @@
-// src/components/RoomManagement.js
 import classNames from 'classnames/bind';
 import styles from './manageRooms.module.scss';
 import { useEffect, useState } from 'react';
@@ -8,7 +7,7 @@ const cx = classNames.bind(styles);
 
 function ManageRooms() {
     const [roomList, setRoomList] = useState([]);
-    const [roomCode, setRoomCode] = useState(''); // For editing
+    const [roomCode, setRoomCode] = useState('');
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [size, setSize] = useState('');
@@ -39,11 +38,10 @@ function ManageRooms() {
         status,
     };
 
-    // Fetch room list on component mount
     useEffect(() => {
         const fetchRoomList = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/room/getroom');
+                const response = await axios.get('http://localhost:5000/roomadmin/getroom');
                 const data = Object.entries(response.data).map(([id, room]) => ({
                     ID_phong: id,
                     ...room,
@@ -61,7 +59,6 @@ function ManageRooms() {
         fetchRoomList();
     }, []);
 
-    // Validate form inputs
     const validateForm = () => {
         if (!name || !price) {
             setError('Tên và giá phòng là bắt buộc.');
@@ -74,7 +71,6 @@ function ManageRooms() {
         return true;
     };
 
-    // Handle form submission (add or update)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -84,17 +80,14 @@ function ManageRooms() {
 
         try {
             if (isEditing) {
-                // Update room
-                await axios.put('http://localhost:5000/room/updateroom', formData);
+                await axios.put('http://localhost:5000/roomadmin/updateroom', formData);
                 setSuccess('Cập nhật phòng thành công!');
             } else {
-                // Add new room
-                await axios.post('http://localhost:5000/room/addroom', formData);
+                await axios.post('http://localhost:5000/roomadmin/addroom', formData);
                 setSuccess('Thêm phòng thành công!');
             }
 
-            // Refresh room list
-            const response = await axios.get('http://localhost:5000/room/getroom');
+            const response = await axios.get('http://localhost:5000/roomadmin/getroom');
             const data = Object.entries(response.data).map(([id, room]) => ({
                 ID_phong: id,
                 ...room,
@@ -106,7 +99,6 @@ function ManageRooms() {
         }
     };
 
-    // Handle edit button click
     const handleEdit = (room) => {
         setRoomCode(room.ID_phong);
         setName(room.name);
@@ -123,17 +115,15 @@ function ManageRooms() {
         setIsEditing(true);
     };
 
-    // Handle delete button click
     const handleDelete = async (roomCode) => {
         if (window.confirm('Bạn có chắc muốn xóa phòng này?')) {
             try {
-                await axios.delete('http://localhost:5000/room/deleteroom', {
+                await axios.delete('http://localhost:5000/roomadmin/deleteroom', {
                     data: { roomCode },
                 });
                 setSuccess('Xóa phòng thành công!');
 
-                // Refresh room list
-                const response = await axios.get('http://localhost:5000/room/getroom');
+                const response = await axios.get('http://localhost:5000/roomadmin/getroom');
                 const data = Object.entries(response.data).map(([id, room]) => ({
                     ID_phong: id,
                     ...room,
@@ -145,7 +135,6 @@ function ManageRooms() {
         }
     };
 
-    // Reset form
     const resetForm = () => {
         setRoomCode('');
         setName('');
@@ -164,11 +153,9 @@ function ManageRooms() {
 
     return (
         <div className={cx('parent')}>
-            {/* Display Success/Error Messages */}
             {error && <div className={cx('alert', 'alert-error')}>{error}</div>}
             {success && <div className={cx('alert', 'alert-success')}>{success}</div>}
 
-            {/* Room List */}
             <div className={cx('room')}>
                 <div className={cx('cart')}>
                     <div className={cx('cart-item')}>
@@ -229,7 +216,6 @@ function ManageRooms() {
                 </div>
             </div>
 
-            {/* Form to Add/Edit Room */}
             <div className={cx('form')}>
                 <h2>{isEditing ? 'Cập Nhật Phòng' : 'Thêm Phòng'}</h2>
                 <form onSubmit={handleSubmit}>
