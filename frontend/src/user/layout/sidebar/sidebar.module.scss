@@ -1,0 +1,176 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -30%;
+    width: 17%;
+    height: 100vh;
+    background-color: #227EA9;
+    display: flex;
+    flex-direction: column;
+    transition: left 0.3s ease-in-out;
+    padding-top: 40px;
+    padding-bottom: 0px;
+    z-index: 1000;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+
+    a {
+        text-decoration: none;
+        color: white;
+        display: block;
+        font-size: 20px;
+        transition: 0.3s;
+        padding: 10px;
+        margin: 5px;
+        
+        &:hover {
+            background: white;
+            color: black;
+            padding-left: 15px;
+        }
+    }
+}
+
+/* Khi sidebar mở */
+.sidebar.active {
+    left: 0;
+}
+
+/* Nút đóng */
+.close-btn {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    transition: background 0.3s;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.4);
+    }
+}
+
+/* Phần trên cùng */
+.sidebar-top {
+    background: #227EA9;
+    padding: 10px;
+    border-bottom: 2px solid white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin: 20px 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+
+        img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+        }
+    } 
+
+    .avatar:hover {
+        padding: 0 !important; 
+    }
+    .user {
+        margin: auto 0;
+        a {
+        }
+    }
+}
+
+/* Phần giữa */
+.sidebar-middle {
+    background: #227EA9;
+    padding: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+
+    a {
+        margin: 10px;
+        font-size: 20px;
+    }
+    p {
+        font-size: 20px;
+    }
+
+    .service-wrapper {
+        display: block;
+        font-size: 20px;
+        color: white;
+        transition: 0.3s;
+        border: none;
+        margin: 10px;
+        padding: 10px;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+            padding-left: 15px;
+        }
+    }
+
+    /* Sidebar phụ nhỏ gọn */
+    .dropdown-menu {
+        position: absolute;
+        left: calc(40% + 10px); /* Đặt cạnh sidebar chính */
+        background-color: #D7D7E1;
+        border-radius: 5px;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        z-index: 1001;
+        width: 180px; /* Chiều rộng nhỏ gọn */
+        
+        a {
+            font-size: 18px;
+            padding: 8px 12px;
+            color: #000;
+            display: block;
+            transition: 0.3s;
+
+
+            &:hover {
+                background: white;
+                color: black;
+                padding-left: 15px;
+            }
+        }
+    }
+
+    .row-middle {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .MdArrowDropDown {
+        font-size: 24px;
+        margin-left: 10px;
+    }
+}
+
+/* Phần dưới cùng */
+.sidebar-bottom {
+    background: #666;
+    padding: 10px;
+    border-top: 2px solid white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: auto;
+}
