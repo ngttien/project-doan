@@ -1,60 +1,52 @@
-// app/controller/admin/BookingController.js
 const { db } = require("../../firebase/firebase");
 
 class BookingAdminController {
-  // Lấy danh sách tất cả phòng đã dặt
+  // lấy danh sách tất cả đặt phòng
   async getBookingAdmin(req, res) {
     try {
       const bookingRef = db.ref("BOOKING");
       const snapshot = await bookingRef.once("value");
 
       if (!snapshot.exists()) {
-        return res.status(400).json({ message: "Không có phòng nào được đặt" });
+        return res.status(400).json({ message: "Không có đơn đặt phòng nào" });
       }
 
       const allBookings = snapshot.val();
       const bookedRooms = [];
 
-      // Lọc ra những phòng có trạng thái "đã đặt phòng"
+      // lấy toàn bộ danh sách đặt phòng
       for (const bookingCode in allBookings) {
-        if (allBookings[bookingCode].TrangThai === "da dat phong") {
-          bookedRooms.push({
-            bookingCode,
-            ...allBookings[bookingCode],
-          });
-        }
+        bookedRooms.push({
+          bookingCode,
+          ...allBookings[bookingCode],
+        });
       }
 
       res.json({ success: true, bookedRooms });
     } catch (error) {
-      console.log("Lỗi lấy danh sách phòng đã đặt:", error);
+      console.log("Lỗi lấy danh sách đặt phòng:", error);
       res.status(500).json({ message: "Lỗi server", error: error.message });
     }
   }
 
-  // Cập nhật trạng thái đặt phòng
+  //cập nhật trạng thái đặt phòng
   async updateBookingAdmin(req, res) {
     try {
-      const { id } = req.params;
-      const { status } = req.body;
+      const { bookingCode, TrangThai } = req.body;
 
-      // Kiểm tra đặt phòng có tồn tại không
-      const bookingRef = db.ref(`bookings/${id}`);
+      if (!bookingCode || !TrangThai) {
+        return res.status(400).json({ message: "Thiếu thông tin cập nhật" });
+      }
+
+      const bookingRef = db.ref(`BOOKING/${bookingCode}`);
       const snapshot = await bookingRef.once("value");
 
       if (!snapshot.exists()) {
         return res.status(404).json({ message: "Đặt phòng không tồn tại" });
       }
 
-      // Kiểm tra trạng thái hợp lệ
-      const validStatuses = ["pending", "confirmed", "cancelled", "completed"];
-      if (!status || !validStatuses.includes(status)) {
-        return res.status(400).json({ message: "Trạng thái không hợp lệ" });
-      }
-
-      // Cập nhật trạng thái
       await bookingRef.update({
-        status,
+        TrangThai,
         updatedAt: new Date().toISOString(),
       });
 
@@ -63,33 +55,35 @@ class BookingAdminController {
         message: "Cập nhật trạng thái đặt phòng thành công",
       });
     } catch (error) {
-      console.error("Error updating booking:", error);
+      console.error("Lỗi cập nhật đặt phòng:", error);
       return res
         .status(500)
         .json({ message: "Lỗi server khi cập nhật đặt phòng" });
     }
   }
 
-  // Xóa đặt phòng
+  // xóa đặt phòng
   async deleteBookingAdmin(req, res) {
     try {
-      const { id } = req.params;
+      const { bookingCode } = req.body;
 
-      // Kiểm tra đặt phòng có tồn tại không
-      const bookingRef = db.ref(`bookings/${id}`);
+      if (!bookingCode) {
+        return res.status(400).json({ message: "Thiếu bookingCode" });
+      }
+
+      const bookingRef = db.ref(`BOOKING/${bookingCode}`);
       const snapshot = await bookingRef.once("value");
 
       if (!snapshot.exists()) {
         return res.status(404).json({ message: "Đặt phòng không tồn tại" });
       }
 
-      // Xóa đặt phòng
       await bookingRef.remove();
       return res
         .status(200)
         .json({ success: true, message: "Xóa đặt phòng thành công" });
     } catch (error) {
-      console.error("Error deleting booking:", error);
+      console.error("Lỗi xóa đặt phòng:", error);
       return res.status(500).json({ message: "Lỗi server khi xóa đặt phòng" });
     }
   }

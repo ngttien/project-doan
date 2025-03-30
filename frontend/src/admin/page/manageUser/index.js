@@ -1,106 +1,235 @@
-import React, { useState } from "react";
-import styles from "./manageUser.module.scss";
-import classNames from "classnames/bind";
+import classNames from 'classnames/bind';
+import styles from './manageUser.module.scss';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
-const initialUsers = [
-  { id: 1, name: "Nguyễn Văn A", email: "user1@example.com", role: "Admin" },
-  { id: 2, name: "Trần Thị B", email: "user2@example.com", role: "Nhân viên" },
-  { id: 3, name: "Lê Văn C", email: "user3@example.com", role: "Khách hàng" },
-];
-
 function ManageUser() {
-  const [users, setUsers] = useState(initialUsers);
-  const [editingUser, setEditingUser] = useState(null);
-  const [newUser, setNewUser] = useState({ name: "", email: "", role: "Khách hàng" });
+  const [customerList, setCustomerList] = useState([]);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [verified, setVerified] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleDelete = (id) => {
-    setUsers(users.filter(user => user.id !== id));
+  const formData = { userId, name, email, phone, verified };
+
+  useEffect(() => {
+    const fetchCustomerList = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/useradmin/getusersadmin');
+        const data = Object.entries(response.data).map(([id, customer]) => ({
+          ID_khachhang: id,
+          ...customer,
+        }));
+        setCustomerList(data);
+      } catch (error) {
+        if (error.response?.status === 404) {
+          setCustomerList([]);
+        } else {
+          console.error('Lỗi lấy danh sách khách hàng:', error);
+          setError('Không thể tải danh sách khách hàng. Vui lòng thử lại sau.');
+        }
+      }
+    };
+    fetchCustomerList();
+
+    const interval = setInterval(fetchCustomerList, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const validateForm = () => {
+    if (!name) {
+      setError('Tên là bắt buộc.');
+      return false;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Email không hợp lệ.');
+      return false;
+    }
+    if (phone && !/^\d{10}$/.test(phone)) {
+      setError('Số điện thoại phải có 10 chữ số.');
+      return false;
+    }
+    return true;
   };
 
-  const handleEdit = (user) => {
-    setEditingUser(user);
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
-  const handleSave = () => {
-    if (editingUser) {
-      setUsers(users.map(user => (user.id === editingUser.id ? editingUser : user)));
-      setEditingUser(null);
-    } else {
-      setUsers([...users, { ...newUser, id: users.length + 1 }]);
-      setNewUser({ name: "", email: "", role: "Khách hàng" });
+    if (!validateForm()) return;
+
+    try {
+      await axios.put('http://localhost:5000/useradmin/updateuseradmin', formData);
+      setSuccess('Cập nhật khách hàng thành công!');
+
+      const response = await axios.get('http://localhost:5000/useradmin/getuseradmin');
+      const data = Object.entries(response.data).map(([id, customer]) => ({
+        ID_khachhang: id,
+        ...customer,
+      }));
+      setCustomerList(data);
+      resetForm();
+    } catch (error) {
+      setError('Lỗi: ' + (error.response?.data?.message || error.message));
     }
   };
 
-  return (
-    <div className={cx("user_container")}>
-      <h1>Quản lý Người dùng</h1>
+  const handleEdit = (customer) => {
+    setUserId(customer.ID_khachhang);
+    setName(customer.name);
+    setEmail(customer.email);
+    setPhone(customer.phone || '');
+    setVerified(customer.verified);
+    setIsEditing(true);
+  };
 
-      {/* Form thêm / sửa người dùng */}
-      <div className={cx("user-form")}>
-        <h2>{editingUser ? "Chỉnh sửa người dùng" : "Thêm người dùng"}</h2>
-        <input
-          type="text"
-          placeholder="Tên"
-          value={editingUser ? editingUser.name : newUser.name}
-          onChange={(e) =>
-            editingUser
-              ? setEditingUser({ ...editingUser, name: e.target.value })
-              : setNewUser({ ...newUser, name: e.target.value })
-          }
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={editingUser ? editingUser.email : newUser.email}
-          onChange={(e) =>
-            editingUser
-              ? setEditingUser({ ...editingUser, email: e.target.value })
-              : setNewUser({ ...newUser, email: e.target.value })
-          }
-        />
-        <select
-          value={editingUser ? editingUser.role : newUser.role}
-          onChange={(e) =>
-            editingUser
-              ? setEditingUser({ ...editingUser, role: e.target.value })
-              : setNewUser({ ...newUser, role: e.target.value })
-          }
-        >
-          <option value="Admin">Admin</option>
-          <option value="Nhân viên">Nhân viên</option>
-          <option value="Khách hàng">Khách hàng</option>
-        </select>
-        <button onClick={handleSave}>{editingUser ? "Lưu" : "Thêm"}</button>
+  const handleDelete = async (userId) => {
+    if (window.confirm('Bạn có chắc muốn xóa khách hàng này?')) {
+      try {
+        await axios.delete('http://localhost:5000/useradmin/deleteuseradmin', {
+          data: { userId },
+        });
+        setSuccess('Xóa khách hàng thành công!');
+
+        const response = await axios.get('http://localhost:5000/useradmin/getuseradmin');
+        const data = Object.entries(response.data).map(([id, customer]) => ({
+          ID_khachhang: id,
+          ...customer,
+        }));
+        setCustomerList(data);
+      } catch (error) {
+        setError('Lỗi khi xóa khách hàng: ' + (error.response?.data?.message || error.message));
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setUserId('');
+    setName('');
+    setEmail('');
+    setPhone('');
+    setVerified(false);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className={cx('parent')}>
+      {error && <div className={cx('alert', 'alert-error')}>{error}</div>}
+      {success && <div className={cx('alert', 'alert-success')}>{success}</div>}
+
+      {/*danh sách khách hàng*/}
+      <div className={cx('customer')}>
+        <div className={cx('cart')}>
+          <div className={cx('cart-item')}>
+            <table className={cx('cart-table')}>
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên</th>
+                  <th>Email</th>
+                  <th>Số Điện Thoại</th>
+                  <th>Xác Thực</th>
+                  <th>Ngày Cập Nhật</th>
+                  <th>Hành Động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customerList.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center' }}>
+                      Không có khách hàng nào.
+                    </td>
+                  </tr>
+                ) : (
+                  customerList.map((item, idx) => (
+                    <tr key={item.ID_khachhang}>
+                      <td>{idx + 1}</td>
+                      <td>{item.name}</td>
+                      <td>{item.email}</td>
+                      <td>{item.phone}</td>
+                      <td>{item.verified ? 'Đã xác thực' : 'Chưa xác thực'}</td>
+                      <td>
+                        {item.updatedAt
+                          ? new Date(item.updatedAt).toLocaleDateString('vi-VN')
+                          : 'N/A'}
+                      </td>
+                      <td>
+                        <button
+                          className={cx('action-btn', 'edit-btn')}
+                          onClick={() => handleEdit(item)}
+                        >
+                          Sửa
+                        </button>
+                        <button
+                          className={cx('action-btn', 'delete-btn')}
+                          onClick={() => handleDelete(item.ID_khachhang)}
+                        >
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      {/* Danh sách người dùng */}
-      <table className={cx("user-table")}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tên</th>
-            <th>Email</th>
-            <th>Vai trò</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <button className={cx("edit-btn")} onClick={() => handleEdit(user)}>Sửa</button>
-                <button className={cx("delete-btn")} onClick={() => handleDelete(user.id)}>Xóa</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/*cập nhật khách hàng*/}
+      {isEditing && (
+        <div className={cx('form')}>
+          <h2>Cập Nhật Khách Hàng</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Họ và Tên"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled // không cho chỉnh sửa gmail
+            />
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Số điện thoại"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <label>
+              <input
+                type="checkbox"
+                checked={verified}
+                onChange={(e) => setVerified(e.target.checked)}
+              />
+              Đã xác thực
+            </label>
+            <button type="submit">Cập Nhật</button>
+            <button
+              type="button"
+              className={cx('cancel-btn')}
+              onClick={resetForm}
+            >
+              Hủy
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

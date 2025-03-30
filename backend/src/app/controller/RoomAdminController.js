@@ -3,11 +3,11 @@ const { db } = require("../../firebase/firebase");
 const { v4: uuidv4 } = require("uuid");
 
 class RoomAdminController {
-  // Lấy danh sách tất cả phòng
+  // lấy danh sách tất cả phòng
   async getRoomsAdmin(req, res) {
     try {
       const roomsRef = db.ref("ROOM"); // Trỏ tới node "ROOM" trong Firebase
-      // Lấy dữ liệu từ Firebase
+      // lấy dữ liệu từ Firebase
       const snapshot = await roomsRef.once("value");
 
       if (!snapshot.exists()) {
@@ -23,8 +23,8 @@ class RoomAdminController {
         .json({ message: "Lỗi server khi lấy danh sách phòng" });
     }
   }
-  // Thêm phòng mới
 
+  // thêm phòng mới
   async addRoomAdmin(req, res) {
     try {
       const {
@@ -41,7 +41,7 @@ class RoomAdminController {
         status,
       } = req.body;
 
-      // Kiểm tra dữ liệu đầu vào
+      // kiểm tra dữ liệu đầu vào
       if (!name || !price) {
         return res
           .status(400)
@@ -54,7 +54,7 @@ class RoomAdminController {
 
       // Chuẩn bị dữ liệu phòng
       const newRoom = {
-        roomCode, // Thêm roomCode vào dữ liệu phòng
+        roomCode,
         name,
         price,
         size: size || "",
@@ -83,8 +83,8 @@ class RoomAdminController {
   // Cập nhật phòng
   async updateRoomAdmin(req, res) {
     try {
-      const { roomCode } = req.body; // Lấy roomCode từ request body
-      const updatedData = req.body; // Dữ liệu cần cập nhật
+      const { roomCode } = req.body;
+      const updatedData = req.body;
 
       // Kiểm tra nếu không có roomCode
       if (!roomCode) {
@@ -112,7 +112,7 @@ class RoomAdminController {
   }
   async deleteRoomAdmin(req, res) {
     try {
-      const { roomCode } = req.body; // Lấy roomCode từ request body
+      const { roomCode } = req.body;
 
       // Kiểm tra nếu không có roomCode
       if (!roomCode) {
