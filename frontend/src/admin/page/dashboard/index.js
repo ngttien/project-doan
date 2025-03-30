@@ -8,15 +8,16 @@ import axios from "axios";
 const cx = classNames.bind(styles);
 
 const menuItems = [
-    { icon: <FaHotel />, label: "Phòng", path: "/admin/room" },
-    { icon: <FaBed />, label: "Đặt phòng", path: "/admin/managerbooking" },
+    { icon: <FaChartLine />, label: "Doanh thu", path: "/admin/revenue" },
     { icon: <FaUserTie />, label: "Nhân viên", path: "/admin/staff" },
     { icon: <FaUser />, label: "Khách", path: "/admin/manageuser" },
+    { icon: <FaHotel />, label: "Phòng", path: "/admin/room" },
+    { icon: <FaBed />, label: "Đặt phòng", path: "/admin/managerbooking" },
     // { icon: <FaConciergeBell />, label: "Dịch vụ", path: "/admin/manage-services" },
-    { icon: <FaFileInvoice />, label: "Hóa đơn", path: "/admin/manage-bills" },
+    // { icon: <FaFileInvoice />, label: "Hóa đơn", path: "/admin/manage-bills" },
     // { icon: <FaTags />, label: "Khuyến mãi", path: "/admin/promotions" },
-    { icon: <FaStar />, label: "Phản hồi", path: "/admin/reviews" },
-    { icon: <FaChartLine />, label: "Doanh thu", path: "/admin/revenue" },
+    // { icon: <FaStar />, label: "Phản hồi", path: "/admin/reviews" },
+
 ];
 
 const Dashboard = () => {

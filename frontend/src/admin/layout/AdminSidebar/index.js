@@ -86,7 +86,7 @@ function AdminSidebar() {
                 >
                     <p>Quản Lí Đặt Phòng</p>
                 </Link>
-                <Link
+                {/* <Link
                     to="/admin/managebills"
                     className={cx("select", { active: location.pathname === "/admin/managebills" })}
                     onClick={(e) => handleNavigation(e, "/admin/managebills")}
@@ -99,7 +99,7 @@ function AdminSidebar() {
                     onClick={(e) => handleNavigation(e, "/admin/reviews")}
                 >
                     <p>Quản Lí Đánh Giá và Phản Hồi</p>
-                </Link>
+                </Link> */}
             </div>
         </div>
     );
