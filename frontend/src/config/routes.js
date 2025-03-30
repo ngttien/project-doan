@@ -12,13 +12,17 @@ const routes = {
     sale: '/sales',
     search: '/search',
     register: '/register',
-    dashboard: '/admin/dashboard',
+
+
+    dashboard: '/admin',
     adlogin: '/admin/login',
+    adregister: '/admin/register',
     managerbooking: '/admin/managerbooking',
     manageuser: '/admin/manageuser',
     staff: '/admin/staff',
     reviews: '/admin/reviews',
     booking: '/booking',
+    manageroom: '/admin/room'
     //homeadmin:'/admin/home',
 };
 

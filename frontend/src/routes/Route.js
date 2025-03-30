@@ -12,9 +12,12 @@ import Booking from '~/user/page/booking';
 //////////////////////////////////////////////////////////////
 import Dashboard from '~/admin/page/dashboard';
 import AdLogin from '~/admin/page/login';
+import AdRegister from '~/admin/page/register';
 import ManagerBooking from '~/admin/page/managerbooking';
 import ManageUser from '~/admin/page/manageUser';
-import Staff from '~/admin/page/staff';
+import ManageRooms from '~/admin/page/manageroom';
+
+import StaffManagement from '~/admin/page/manageStaff';
 // import Reviews from '~/admin/page/reviews';
 import AdminLayout from '~/admin/layout/adminLayout';
 import routesconfig from '~/config/routes';
@@ -30,14 +33,16 @@ const config = [
     { path: routesconfig.introduce, component: introduce },
     { path: routesconfig.register, component: Register, Layout: null },
     { path: routesconfig.booking, component: Booking },
-    ////////// //
+    ///////////
     { path: routesconfig.dashboard, component: Dashboard, Layout: AdminLayout },
     { path: routesconfig.adlogin, component: AdLogin, Layout: null },
+    { path: routesconfig.adregister, component: AdRegister, Layout: null },
     { path: routesconfig.managerbooking, component: ManagerBooking, Layout: AdminLayout },
     { path: routesconfig.manageuser, component: ManageUser, Layout: AdminLayout },
-    { path: routesconfig.staff, component: Staff, Layout: AdminLayout },
+    { path: routesconfig.manageroom, component: ManageRooms, Layout: AdminLayout },
+    { path: routesconfig.staff, component: StaffManagement, Layout: AdminLayout },
     //{ path: routesconfig.homeadmin, component: Home, Layout: AdminLayout },
-    // { path: '/admin/reviews', component: Reviews , Layout: AdminLayout },
+    //{ path: '/admin/reviews', component: Reviews , Layout: AdminLayout },
 ];
 
 export default config;

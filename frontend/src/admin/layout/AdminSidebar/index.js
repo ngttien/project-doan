@@ -13,22 +13,22 @@ function AdminSidebar() {
                 <Link to="/admin/revenue" className={cx("select", { active: location.pathname === "/admin/revenue" })}>
                     <p>Doanh Thu</p>
                 </Link>
-                <Link to="/admin/manage-staff" className={cx("select", { active: location.pathname === "/admin/manage-staff" })}>
+                <Link to="/admin/staff" className={cx("select", { active: location.pathname === "/admin/sstaff" })}>
                     <p>Quản Lí Nhân Viên</p>
                 </Link>
-                <Link to="/admin/manage-user" className={cx("select", { active: location.pathname === "/admin/manage-user" })}>
+                <Link to="/admin/manageuser" className={cx("select", { active: location.pathname === "/admin/manageuser" })}>
                     <p>Quản Lí Khách Hàng</p>
                 </Link>
-                <Link to="/admin/manage-rooms" className={cx("select", { active: location.pathname === "/admin/manage-rooms" })}>
+                <Link to="/admin/room" className={cx("select", { active: location.pathname === "/admin/room" })}>
                     <p>Quản Lí Phòng</p>
                 </Link>
-                <Link to="/admin/manage-booking" className={cx("select", { active: location.pathname === "/admin/manage-booking" })}>
+                <Link to="/admin/managerbooking" className={cx("select", { active: location.pathname === "/admin/managerbooking" })}>
                     <p>Quản Lí Đặt Phòng</p>
                 </Link>
-                <Link to="/admin/manage-services" className={cx("select", { active: location.pathname === "/admin/manage-services" })}>
+                <Link to="/admin/manageservices" className={cx("select", { active: location.pathname === "/admin/manageservices" })}>
                     <p>Quản Lí Dịch Vụ</p>
                 </Link>
-                <Link to="/admin/manage-bills" className={cx("select", { active: location.pathname === "/admin/manage-bills" })}>
+                <Link to="/admin/managebills" className={cx("select", { active: location.pathname === "/admin/managebills" })}>
                     <p>Quản Lí Hoá Đơn</p>
                 </Link>
                 <Link to="/admin/reviews" className={cx("select", { active: location.pathname === "/admin/reviews" })}>

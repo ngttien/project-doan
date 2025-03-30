@@ -1,83 +1,80 @@
-import React, { useState } from "react";
-import { FaTrash } from "react-icons/fa";
-import Styles from "./managebooking.module.scss";
-import classNames from "classnames/bind";
+import styles from './managebooking.module.scss';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-const cx = classNames.bind(Styles);
-
-const branches = ["Chi nhánh 1", "Chi nhánh 2", "Chi nhánh 3"];
-const roomsByBranch = {
-    "Chi nhánh 1": ["101", "102", "103"],
-    "Chi nhánh 2": ["201", "202", "203"],
-    "Chi nhánh 3": ["301", "302", "303"],
-};
-
-function ManageBooking() {
-    const [selectedBranch, setSelectedBranch] = useState(branches[0]);
-    const [customer, setCustomer] = useState("");
-    const [phone, setPhone] = useState("");
-    const [room, setRoom] = useState("");
-    const [checkIn, setCheckIn] = useState("");
-    const [checkOut, setCheckOut] = useState("");
+function ManagerBooking() {
     const [bookings, setBookings] = useState([]);
-    const [showMessage, setShowMessage] = useState(false);
 
-    const handleAddBooking = () => {
-        if (customer && room && checkIn && checkOut) {
-            const newBooking = { branch: selectedBranch, customer, room, checkIn, checkOut };
-            setBookings([...bookings, newBooking]);
-            setCustomer("");
-            setRoom("");
-            setCheckIn("");
-            setCheckOut("");
-            
-            // Hiển thị thông báo
-            setShowMessage(true);
-            setTimeout(() => setShowMessage(false), 3000); // Ẩn sau 3 giây
+    useEffect(() => {
+        const fetchBookings = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/booking/list', { withCredentials: true });
+                setBookings(Object.values(response.data));
+            } catch (error) {
+                console.error('Lỗi lấy danh sách đặt phòng:', error);
+            }
+        };
+        fetchBookings();
+    }, []);
+
+    const handleConfirm = async (bookingCode) => {
+        try {
+            await axios.post('http://localhost:5000/booking/confirm', { bookingCode }, { withCredentials: true });
+            alert('Xác nhận đặt phòng thành công');
+            window.location.reload();
+        } catch (error) {
+            alert('Lỗi khi xác nhận đặt phòng!');
         }
     };
 
-    const handleDelete = (index) => {
-        setBookings(bookings.filter((_, i) => i !== index));
+    const handleCancel = async (bookingCode) => {
+        try {
+            await axios.post('http://localhost:5000/booking/cancel', { bookingCode }, { withCredentials: true });
+            alert('Hủy đặt phòng thành công');
+            window.location.reload();
+        } catch (error) {
+            alert('Lỗi khi hủy đặt phòng!');
+        }
     };
 
     return (
-        <div className={cx("booking_container")}>  
-            {/* Hiển thị thông báo đặt phòng thành công */}
-            {showMessage && <div className={cx("success_message")}>Đặt phòng thành công!</div>}
-
-            <div className={cx("form_client")}>
-                <input
-                    type="text"
-                    placeholder="Tên khách hàng"
-                    value={customer}
-                    onChange={(e) => setCustomer(e.target.value)}
-                />
-                <input
-                    type="text"
-                    placeholder="Số điện thoại"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                />
-                <select onChange={(e) => setSelectedBranch(e.target.value)} value={selectedBranch}>
-                    {branches.map((branch) => (
-                        <option key={branch} value={branch}>{branch}</option>
-                    ))}
-                </select>
-                <select onChange={(e) => setRoom(e.target.value)} value={room}>
-                    <option value="">Chọn phòng</option>
-                    {roomsByBranch[selectedBranch].map((room) => (
-                        <option key={room} value={room}>{room}</option>
-                    ))}
-                </select>
-                <span>Ngày nhận phòng:</span>
-                <span>Ngày trả phòng:</span>
-                <input type="date" value={checkIn} onChange={(e) => setCheckIn(e.target.value)} />
-                <input type="date" value={checkOut} onChange={(e) => setCheckOut(e.target.value)} />
-                <button onClick={handleAddBooking}>Thêm</button>
+        <div className={styles.parent}>
+            <div className={styles.bookingList}>
+                <h2>Quản lý Đặt Phòng</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên Người Đặt</th>
+                            <th>Thông Tin Phòng</th>
+                            <th>Giá Tiền</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookings.map((booking, idx) => (
+                            <tr key={idx}>
+                                <td>{idx + 1}</td>
+                                <td>{booking.name}</td>
+                                <td>{booking.roomId} - {booking.roomName}</td>
+                                <td>{booking.price} VND</td>
+                                <td>{booking.TrangThai}</td>
+                                <td>
+                                    {booking.TrangThai === 'dang cho xac nhan' && (
+                                        <button onClick={() => handleConfirm(booking.bookingCode)}>Xác nhận</button>
+                                    )}
+                                    {booking.TrangThai !== 'da huy' && (
+                                        <button onClick={() => handleCancel(booking.bookingCode)}>Hủy</button>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
 }
 
-export default ManageBooking;
+export default ManagerBooking;
