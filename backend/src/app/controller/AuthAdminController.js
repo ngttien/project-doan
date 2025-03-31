@@ -53,8 +53,9 @@ class AuthAdminController {
             const data = Object.values(snapshot.val())[0];
             const adminId = Object.keys(snapshot.val())[0];
 
-            // kiểm tra mật khẩu
-            if (data.password !== password) {
+            // kiểm tra mật khẩu bằng bcrypt.compare
+            const isMatch = await bcrypt.compare(password, data.password);
+            if (!isMatch) {
                 return res.status(400).json({ message: "Sai mật khẩu" });
             }
 
