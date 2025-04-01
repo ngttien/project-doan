@@ -1,0 +1,138 @@
+.registerContainer {
+    background-image: url('../../../assets/user/images/background/login_background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .back_home {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 20px;
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+        .back_icon {
+            margin-right: 5px;
+        }
+    }
+
+    .registerForm, .otpForm {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px 50px;
+        width: 30%;
+        position: relative;
+
+        @media (max-width: 768px) {
+            width: 90%;
+        }
+    }
+.formTitle {
+    color: #fff;
+}
+    .form_Title {
+        margin: 10px auto;
+        color: #fff;
+
+        h2 {
+            text-align: center;
+            font-size: 30px;
+            color: #fff;
+            font-weight: lighter;
+        }
+    }
+
+    .inputGroup {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 70%;
+        margin: 0 auto 20px;
+
+        .input {
+            flex: 1;
+            background: transparent;
+            padding: 15px 10px;
+            font-size: 14px;
+            border: 2px solid #537b35;
+            outline: none;
+            color: #fff;
+
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.7);
+            }
+        }
+    }
+
+    .submitButton {
+        width: 40%;
+        padding: 12px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #537b35;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+        margin: 0 auto;
+        display: block;
+
+        &:hover {
+            background-color: #6a9b4b;
+        }
+
+        &:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+    }
+
+    .linkButton {
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        margin-top: 15px;
+        display: block;
+        margin: 10px auto;
+
+        &:hover {
+            text-decoration: underline;
+            color: #fff;
+        }
+    }
+
+    .message {
+        color: #fff;
+        font-size: 14px;
+        margin-top: 10px;
+        text-align: center;
+    }
+    
+    .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+}
